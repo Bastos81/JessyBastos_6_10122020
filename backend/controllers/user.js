@@ -7,27 +7,26 @@ const User = require('../models/User')
 // S'inscrire 
 
 exports.signup = (req, res, next) => {
-  // Vérification du mot de passe
-    // Mots de passe non conforme
-  if (!/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.{6,})/.test(req.body.password)) {
-    return res.status(401).json({ error: 'Le mot de passe doit contenir une lettre majuscule, une minuscule et au moins 1 chiffre (6 caractères min)' });
-  } else {
-    // Mots de passe conforme
-    bcrypt.hash(req.body.password, 10)
-      .then(hash => {
-        const user = new User({
-          email: req.body.email,
-          password: hash
-        })
-        user.save()
-          .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
-          .catch(error => res.status(400).json({ error }));
-      })
-      .catch(error => res.status(500).json({ error }));
-  }
+  bcrypt.hash(req.body.password, 10)
+    .then(hash => {
+      const user = new User({
+        email: req.body.email,
+        password: hash
+      });
+      user.save()
+        .then(() => res.status(201).json({
+          message: 'Utilisateur créé !'
+        }))
+        .catch(error => res.status(400).json({
+          error
+        }));
+    })
+    .catch(error => res.status(500).json({
+      error
+    }));
 };
 
-// S"enregister
+// S'enregister
 
 exports.login = (req, res, next) => {
   // Rechercher l'utilisateur
