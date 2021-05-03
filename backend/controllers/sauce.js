@@ -31,6 +31,7 @@ exports.getAllSauces = (req, res, next) => {
 }
 
 // Modifier une sauce
+
 exports.modifySauce = (req, res, next) => {
   let sauceObject = {};
   req.file ? (
@@ -44,30 +45,12 @@ exports.modifySauce = (req, res, next) => {
     sauceObject = {
       // On modifie les données et on ajoute la nouvelle image
       ...JSON.parse(req.body.sauce),
-      imageUrl: `${req.protocol}://${req.get('host')}/images/${
-        req.file.filename
-      }`,
+      imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     }
-  ) : ( 
-    sauceObject = {
-      ...req.body
-    }
-  )
-  Sauce.updateOne(
-      // On applique les paramètre de sauceObject
-      {
-        _id: req.params.id
-      }, {
-        ...sauceObject,
-        _id: req.params.id
-      }
-    )
-    .then(() => res.status(200).json({
-      message: 'Sauce modifiée !'
-    }))
-    .catch((error) => res.status(400).json({
-      error
-    }))
+  ) : (sauceObject = {...req.body})
+  Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
+    .then(() => res.status(200).json({ message: 'Objet modifié !' }))
+    .catch(error => res.status(400).json({ error }));
 }
 
 // Supprimer une sauce
