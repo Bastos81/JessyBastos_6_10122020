@@ -9,7 +9,7 @@ const User = require('../models/User')
 exports.signup = (req, res, next) => {
   // Vérification du mot de passe
     // Mots de passe non conforme
-  if (!/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.{6,})/.test(req.body.password)) {   // Test password strength
+  if (!/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.{6,})/.test(req.body.password)) {
     return res.status(401).json({ error: 'Le mot de passe doit contenir une lettre majuscule, une minuscule et au moins 1 chiffre (6 caractères min)' });
   } else {
     // Mots de passe conforme
