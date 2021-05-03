@@ -2,18 +2,17 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken');
 const User = require('../models/User')
 
-const TOKEN = process.env.TOKEN; /** Vérification ou suppression **/
+/**  Fonctions pour s'inscrire ou s'enregistrer **/
 
-/**  Functions for user signup/login **/
-
-// SIGNUP 
+// S'inscrire 
 
 exports.signup = (req, res, next) => {
-  // Password is not acceptable
+  // Vérification du mot de passe
+    // Mots de passe non conforme
   if (!/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.{6,})/.test(req.body.password)) {   // Test password strength
     return res.status(401).json({ error: 'Le mot de passe doit contenir une lettre majuscule, une minuscule et au moins 1 chiffre (6 caractères min)' });
   } else {
-    // Password is acceptable, hash it
+    // Mots de passe conforme
     bcrypt.hash(req.body.password, 10)
       .then(hash => {
         const user = new User({
@@ -28,24 +27,29 @@ exports.signup = (req, res, next) => {
   }
 };
 
-// LOGIN 
+// S"enregister
 
 exports.login = (req, res, next) => {
-  User.findOne({ email: req.body.email }) // Find user. 
+  // Rechercher l'utilisateur
+  User.findOne({ email: req.body.email }) 
+    // Si l'utilisateur n'existe pas
     .then(user => {
-      if (!user) { // If user not found
+      if (!user) { 
         return res.status(401).json({ error: 'Utilisateur non trouvé !' });
       }
-      bcrypt.compare(req.body.password, user.password) // If user found, compare password send in res and user 
-        .then(valid => { // Boolean
-          if (!valid) { //False
+    // Si l'utilisateur existe
+      bcrypt.compare(req.body.password, user.password) 
+        .then(valid => { 
+          // Si le mot de passe est incorrect
+          if (!valid) { 
             return res.status(401).json({ error: 'Mot de passe incorrect !' });
           }
-          res.status(200).json({ //True
+          // Si le mot de passe est correct
+          res.status(200).json({
             userId: user._id,
             token: jwt.sign(
               { userId: user._id },
-              TOKEN,
+              'RANDOM_TOKEN_SECRET',
               { expiresIn: '8h' }
             )
           });
