@@ -3,6 +3,10 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
 const sauceRoutes = require('./routes/sauce');
+const userRoutes = require('./routes/user');
+const path = require('path');
+
+// Connexion à MongoBD
 
 mongoose.connect('mongodb+srv://Jessy81:Castres81@cluster0.pd44b.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
   { useNewUrlParser: true,
@@ -14,14 +18,17 @@ mongoose.connect('mongodb+srv://Jessy81:Castres81@cluster0.pd44b.mongodb.net/myF
 const app = express();
 
 app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-    next();
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+  next();
 });
 
 app.use(express.json());
 
+app.use('/images', express.static(path.join(__dirname, 'images')));
+
 app.use('/api/sauce', sauceRoutes);
+app.use('/api/auth', userRoutes);
 
 module.exports = app;

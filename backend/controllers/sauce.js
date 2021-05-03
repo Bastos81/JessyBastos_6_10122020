@@ -58,15 +58,15 @@ exports.deleteSauce = (req, res, next) => {
 
 
 //Like ou dislike d'une sauce
-exports.likeSauce = (req, res, next) => {
+exports.rateSauce = (req, res, next) => {
   switch (req.body.like) {
     // Vérifier si l'utilisateur a déjà liké ou disliké la sauce
     case 0:
       Sauce.findOne({ _id: req.params.id })
         .then((sauce) => {
           // Si l'utilisateur a déjà liké la sauce
-          if (sauce.usersLiked.find(user => user === req.body.userId)) {
-            Sauce.updateOne({ _id: req.params.id }, {
+          if (sauce.usersLiked.find(user => user === req.body.userId)) { // on cherche si l'utilisateur est déjà dans le tableau usersLiked
+            Sauce.updateOne({ _id: req.params.id }, { 
               $inc: { likes: -1 },
               $pull: { usersLiked: req.body.userId },
               _id: req.params.id
