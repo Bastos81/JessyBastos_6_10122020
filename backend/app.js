@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
-const Sauce = require('./models/sauce');
+const sauceRoutes = require('./routes/sauce');
 
 mongoose.connect('mongodb+srv://Jessy81:Castres81@cluster0.pd44b.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
   { useNewUrlParser: true,
@@ -22,5 +22,6 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 
+app.use('/api/sauce', sauceRoutes);
 
 module.exports = app;
