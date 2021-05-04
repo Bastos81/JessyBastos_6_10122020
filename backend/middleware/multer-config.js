@@ -10,13 +10,6 @@ const storage = multer.diskStorage({
   destination: (req, file, callback) => {
     callback(null, 'images');
   },
-  fileFilter: function (req, file, cb) {
-    if (file.mimetype !== 'image/jpg' || file.mimetype !== 'image/jpeg' ||file.mimetype !== 'image/png') {
-     req.fileValidationError = 'goes wrong on the mimetype';
-     return cb(null, false, new Error('goes wrong on the mimetype'));
-    }
-    cb(null, true);
-  },
   filename: (req, file, callback) => {
     const name = file.originalname.split(' ').join('_');
     const extension = MIME_TYPES[file.mimetype];
@@ -24,5 +17,16 @@ const storage = multer.diskStorage({
   }
 });
 
+var upload = multer({
+  storage: storage,
+  fileFilter: (req, file, callback) => {
+    if (file.mimetype == "image/png" || file.mimetype == "image/jpg" || file.mimetype == "image/jpeg") {
+      callback(null, true);
+    } else {
+      callback(null, false);
+      return callback(new Error('Only .png, .jpg and .jpeg format allowed!'));
+    }
+  }
+});
 
-module.exports = multer({ storage: storage }).single('image');
+module.exports = upload.single('image');

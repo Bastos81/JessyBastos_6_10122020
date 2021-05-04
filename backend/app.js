@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -6,10 +7,11 @@ const sauceRoutes = require('./routes/sauce');
 const userRoutes = require('./routes/user');
 const path = require('path');
 var cors = require('cors')
+const helmet = require('helmet');
 
-// Connexion à MongoBD
+// Connexion à MongoBD et masquage de l'iD, du mot de passe et et de l'adresse avec DOTENV
 
-mongoose.connect('mongodb+srv://Jessy81:Castres81@cluster0.pd44b.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
+mongoose.connect(process.env.UrlBDD,
   { useNewUrlParser: true,
     useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))
@@ -27,6 +29,7 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 app.use(cors())
+app.use(helmet());
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
