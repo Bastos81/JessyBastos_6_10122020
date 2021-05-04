@@ -1,5 +1,6 @@
 const Sauce = require('../models/Sauce')
-const fs = require('fs')
+const fs = require('fs');
+const multer = require('multer');
 
 /** Controllers pour créations, modifications, suppressions et notations des sauces **/
 
@@ -11,7 +12,7 @@ exports.createSauce = (req, res, next) => {
     ...sauceObject,
     imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
   });
-  sauce.save()
+  sauce.save(req.fileValidationError = false)
     .then(() => res.status(201).json({ message: 'Sauce enregistré !' }))
     .catch(error => res.status(400).json({ error }));
 }
@@ -48,7 +49,7 @@ exports.modifySauce = (req, res, next) => {
       imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     }
   ) : (sauceObject = {...req.body})
-  Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
+  Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id }, { runValidators: true })
     .then(() => res.status(200).json({ message: 'Objet modifié !' }))
     .catch(error => res.status(400).json({ error }));
 }
